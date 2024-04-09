@@ -1,0 +1,118 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
+
+body {
+    background: linear-gradient(to right,#A34ACD, #6C4ACD);
+    overflow-x: hidden;
+}
+
+.container {
+    background: #fff;
+    width: 540px;
+    height: 450px;
+    margin: 0 auto;
+    position: relative;
+    margin-top: 10%;
+    box-shadow: 2px 5px 20px
+    rgba(119,119, 119, 55);
+}
+
+.leftbox {
+    float: left;
+    top: -5% ;
+    left: 5%;
+    position: absolute;
+    width: 15%;
+    height: 110%;
+    background: #6C4ACD;
+    box-shadow: 3px 3px 10px
+    rgba(119, 119, 119, .5);
+    border: #fff;
+}
+
+nav a {
+    list-style: none;
+    padding: 35px;
+    color: #fff;
+    font-size: 1.1em;
+    display: block;
+    transition: all .3s ease-in-out;
+}
+
+nav a:hover {
+    color: #A34ACD;
+    cursor: pointer;
+    transform: scale (1.2);
+}
+
+nav a:first-child {
+    margin-top: 7px;
+}
+
+nav a.active {
+    color: #A34ACD;
+}
+
+.rightbox {
+    width: 60%;
+    margin-left: 27%;
+    padding-top: 5px;
+}
+
+.tabShow {
+    transition: all .5s ease-in;
+    width: 80%;
+    display: none;
+}
+
+h1 {
+    font-family: "Montserrat", sans-serif;
+    color: #6C4ACD;
+    font-size: 1.2rem;
+    margin-top: 40px;
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #777;
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    font-size: 8px;
+    letter-spacing: 1px;
+    margin-left: 2px;
+    margin-top: 10px;
+}
+
+.input, p {
+    border: 0;
+    border-bottom: 1px solid #3fb6a8;
+    width: 80%;
+    font-family: 'montserrat', sans-serif;
+    font-size: .7em;
+    padding: 7px ;
+    color:#070707;
+    outline: none;
+}
+
+span {
+    font-size: .7em;
+    color: #777;
+}
+
+.btn {
+    font-family: "roboto", sans-serif;
+    text-transform: uppercase;
+    font-size: 15px;
+    border:0;
+    color: #fff;
+    background: #6C4ACD;
+    padding: 7px 15px;
+    box-shadow: 0px 2px 4px Opx
+    rgba(8,0,8,2);
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.btn:hover {
+    background-color: #A34ACD;
+    color: #6C4ACD;
+}
