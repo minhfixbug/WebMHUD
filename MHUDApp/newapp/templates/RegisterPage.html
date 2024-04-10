@@ -11,6 +11,7 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
+    
     <div class="wrapper2">
         <div class="Form-register">
             <form action="" method="POST"> {% csrf_token %}
@@ -43,6 +44,12 @@
                     <p>Already have an account? <a href="http://127.0.0.1:8000/newapp/login">Login</a></p>
                 </div>
             </form>
+            <!-- Thông báo -->
+            {% for message in messages %}
+                <div style="width: 100%; height: 50px; background-color: red; text-align: center;">
+                    {{ message }}
+                </div>
+            {% endfor %}
         </div>
     </div>
 

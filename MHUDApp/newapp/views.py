@@ -1,7 +1,8 @@
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse # type: ignore
 from .models import AddUser
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.shortcuts import render
 import re
 
 import tkinter as tk
@@ -53,15 +54,14 @@ def Login(request):
         username1 = request.POST.get('user2')
         password1 = request.POST.get('pass2')
 
-        data=get_password_by_username(username1)
-        if data is not None:
-            temp=cipher.decrypt(data)
-            if temp==password1:
-                check_user = authenticate(request, username=username1, password=temp)
-                auth_login(request, check_user)
-                return redirect('userpage')
-            else:
-                print("sai mk tk")
+        check_user = authenticate(request, username=username1, password=password1)
+
+        if check_user is not None:
+            auth_login(request, check_user)
+
+            return redirect('userpage')
+        else:
+            messages.info(request, "Username or password incorrect!")
 
     return render(request, "LoginPage.html")
 
@@ -73,23 +73,22 @@ def Register(request):
         confirmpassword = request.POST['cpass1']
 
         if(is_valid_username(username) == True and is_valid_email(email) == True):
-            if(is_valid_password(password, confirmpassword) == True): 
-                data=password
-                password=cipher.encrypt(data.encode())
+            if(is_valid_password(password, confirmpassword) == True):
                 user = User.objects.create_user(username=username, email=email, password=password)
                 user.save()
             else:
                 message = is_valid_password(password, confirmpassword)
-                messagebox.showerror(message)
+                messages.info(request, message)
         else:
             message = is_valid_username(username)
             if message is not True:
-                messagebox.showerror(message)
+                messages.info(request, message)
             else:
-                messagebox.showerror('Email is invalid')
+                messages.info(request, "Email is incorrect format!")
         
 
     return render(request, "RegisterPage.html")
+
 
 def is_valid_username(username):
     # Kiểm tra chiều dài của tên người dùng
