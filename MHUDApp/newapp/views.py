@@ -9,21 +9,59 @@ from tkinter import messagebox
 
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
+from Crypto.Hash import SHA256
+import sys
+
+key = SHA256.new(b'this is my key for the AES code!').digest()
+
 # Create your views here.
+
+class AESCipher:
+    def __init__(self, key):
+        self.key = key
+        self.block_size = AES.block_size
+
+    def encrypt(self, data):
+        # Ensure the data is in bytes
+        if not isinstance(data, bytes):
+            raise ValueError("Data must be in bytes.")
+        data = pad(data, self.block_size)
+        iv = AES.new(self.key, AES.MODE_CBC).iv
+        cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        encrypted_text = cipher.encrypt(data)
+        return iv + encrypted_text
+
+    def decrypt(self, encrypted_text):
+        iv = encrypted_text[:self.block_size]
+        cipher = AES.new(self.key, AES.MODE_CBC, iv)
+        plaintext = unpad(cipher.decrypt(encrypted_text[self.block_size:]), self.block_size)
+        return plaintext
+
+def get_password_by_username(username):
+    try:
+        user = User.objects.get(username=username)
+        return user.password
+    except User.DoesNotExist:
+        return None
+
+cipher = AESCipher(key)
 
 def Login(request):
     if request.method == 'POST':
         username1 = request.POST.get('user2')
         password1 = request.POST.get('pass2')
 
-        check_user = authenticate(request, username=username1, password=password1)
-
-        if check_user is not None:
-            auth_login(request, check_user)
-
-            return redirect('userpage')
-        else:
-            print("sai mk tk")
+        data=get_password_by_username(username1)
+        if data is not None:
+            temp=cipher.decrypt(data)
+            if temp==password1:
+                check_user = authenticate(request, username=username1, password=temp)
+                auth_login(request, check_user)
+                return redirect('userpage')
+            else:
+                print("sai mk tk")
 
     return render(request, "LoginPage.html")
 
@@ -35,7 +73,9 @@ def Register(request):
         confirmpassword = request.POST['cpass1']
 
         if(is_valid_username(username) == True and is_valid_email(email) == True):
-            if(is_valid_password(password, confirmpassword) == True):
+            if(is_valid_password(password, confirmpassword) == True): 
+                data=password
+                password=cipher.encrypt(data.encode())
                 user = User.objects.create_user(username=username, email=email, password=password)
                 user.save()
             else:
