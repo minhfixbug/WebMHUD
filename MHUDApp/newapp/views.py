@@ -103,3 +103,6 @@ def User1(request):
 
 def Admin(request):
     return render(request, "AdminPage.html")
+
+def Load(request):
+    return render(request, "LoadingPage.html")
