@@ -59,16 +59,14 @@ def Login(request):
     if request.method == 'POST':
         username1 = request.POST.get('user2')
         password1 = request.POST.get('pass2')
-
+            
         data = get_password_by_username(username1)
-        #check pass lấy ra
-        print(data)
-
+        data = eval(data)
+        
         if data is not None:
             temp = cipher.decrypt(data)
             #ko decrypt đc 
-            print('decrypt', temp)
-            if temp == password1:
+            if temp == password1.encode():
                 check_user = authenticate(request, username=username1, password=temp)
                 auth_login(request, check_user)
                 return redirect('userpage')
@@ -115,7 +113,7 @@ def Register(request):
         if(is_valid_username(username) == True and is_valid_email(email) == True):
             if(is_valid_password(password, confirmpassword) == True):
                 data=password
-                password_enc=cipher.encrypt(data.encode())
+                password_enc=cipher.encrypt(data.encode('utf-8')).hex()
                 user1 = AddUser(Username=username, Email=email, Password=password_enc)
                 token = create_token(username, password, user_types)
                 user1.save()
