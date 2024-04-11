@@ -9,6 +9,7 @@ import tkinter as tk
 from tkinter import messagebox
 
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth import SESSION_KEY
 
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
@@ -54,16 +55,41 @@ def Login(request):
         username1 = request.POST.get('user2')
         password1 = request.POST.get('pass2')
 
-        check_user = authenticate(request, username=username1, password=password1)
+        check_user = custom_authenticate(username1, password1)
 
         if check_user is not None:
-            auth_login(request, check_user)
+            custom_login(request, check_user)
 
             return redirect('userpage')
         else:
             messages.info(request, "Username or password incorrect!")
 
     return render(request, "LoginPage.html")
+
+def custom_login(request, user):
+    # Gán ID của người dùng vào session để đánh dấu người dùng đã đăng nhập
+    request.session[SESSION_KEY] = user.pk
+
+def custom_authenticate(username, password):
+    try:
+        # Tìm kiếm người dùng với tên người dùng được cung cấp
+        user = AddUser.objects.get(Username=username)
+        # Kiểm tra mật khẩu của người dùng
+        if custom_check_password(password):
+            # Trả về người dùng nếu mật khẩu đúng
+            return user
+    except AddUser.DoesNotExist:
+        # Trả về None nếu không tìm thấy người dùng
+        return None
+    # Trả về None nếu mật khẩu không đúng
+    return None
+
+def custom_check_password(password):
+    user = AddUser.objects.get(Password=password)
+    if user is not None:
+        return True
+    else:
+        return False
 
 def Register(request):
     if request.method == 'POST':
@@ -74,7 +100,7 @@ def Register(request):
 
         if(is_valid_username(username) == True and is_valid_email(email) == True):
             if(is_valid_password(password, confirmpassword) == True):
-                user = User.objects.create_user(username=username, email=email, password=password)
+                user = AddUser(Username=username, Email=email, Password=password)
                 user.save()
             else:
                 message = is_valid_password(password, confirmpassword)
