@@ -48,9 +48,9 @@ class AESCipher:
 
 def get_password_by_username(username):
     try:
-        user = User.objects.get(username=username)
-        return user.password
-    except User.DoesNotExist:
+        user = AddUser.objects.get(Username=username)
+        return user.Password
+    except AddUser.DoesNotExist:
         return None
 
 cipher = AESCipher(key)
@@ -60,12 +60,20 @@ def Login(request):
         username1 = request.POST.get('user2')
         password1 = request.POST.get('pass2')
 
-        check_user = authenticate(username1, password1)
+        data = get_password_by_username(username1)
+        #check pass lấy ra
+        print(data)
 
-        if check_user is not None:
-            auth_login(request, check_user)
-
-            return redirect('userpage')
+        if data is not None:
+            temp = cipher.decrypt(data)
+            #ko decrypt đc 
+            print('decrypt', temp)
+            if temp == password1:
+                check_user = authenticate(request, username=username1, password=temp)
+                auth_login(request, check_user)
+                return redirect('userpage')
+            else:
+                messages.info(request, "Username or password incorrect!")
         else:
             messages.info(request, "Username or password incorrect!")
 
@@ -106,7 +114,9 @@ def Register(request):
 
         if(is_valid_username(username) == True and is_valid_email(email) == True):
             if(is_valid_password(password, confirmpassword) == True):
-                user1 = AddUser(Username=username, Email=email, Password=password)
+                data=password
+                password_enc=cipher.encrypt(data.encode())
+                user1 = AddUser(Username=username, Email=email, Password=password_enc)
                 token = create_token(username, password, user_types)
                 user1.save()
                 print(token)
@@ -180,8 +190,6 @@ def Load(request):
     return render(request, "LoadingPage.html")
 
 def create_token(username, password, user_types):
-    cipher = AESCipher(key)
-
     encoded_username = username.encode()
     encoded_password = password.encode()
     encoded_user_types = user_types.encode()
