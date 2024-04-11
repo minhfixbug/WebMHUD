@@ -1,0 +1,18 @@
+{%load static%}
+
+<title>Test API</title>
+
+<body>
+    <h1>feth api</h1>
+
+    <script>
+        fetch('http://youtube.local/token.json').then(function (response) {
+            return response.json();
+        }).then(function (obj) {
+            console.log(obj);
+        }).catch(function (error) {
+            console.error('Something went wrong with retrieving the people!');
+            console.error(error);
+        });
+    </script>
+</body>

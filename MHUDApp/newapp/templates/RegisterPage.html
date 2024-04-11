@@ -11,7 +11,6 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
 <body>
-    
     <div class="wrapper2">
         <div class="Form-register">
             <form action="" method="POST"> {% csrf_token %}
@@ -34,8 +33,7 @@
                 </div>
 
                 <div class="remember-forgot2">
-                    <label> <input type="radio" name="user_type" value="user"> User</label>
-                    <label> <input type="radio" name="user_type" value="admin"> Admin</label>
+                    <label> <input type="radio" name="user_type" value="user" required> User</label>
                 </div>
     
                 <!-- <button class="btn2" onclick="window.location.href='Login.html'">Register</button> -->
