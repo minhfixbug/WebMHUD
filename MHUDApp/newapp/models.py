@@ -12,7 +12,7 @@ class AddUser(models.Model):
     # ConfirmPassword = models.CharField(max_length=100,null=False,blank=False)
     
     def __str__(self) -> str:
-        return self.username 
+        return self.Username 
     
 class RegisterForm(UserCreationForm):
     username = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"Username"}))

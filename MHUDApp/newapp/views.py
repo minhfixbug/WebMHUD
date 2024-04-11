@@ -1,15 +1,20 @@
-from django.shortcuts import render, redirect, HttpResponse # type: ignore
+from django.shortcuts import render, redirect # type: ignore
 from .models import AddUser
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.shortcuts import render
 import re
+import json
 
 import tkinter as tk
 from tkinter import messagebox
 
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth import SESSION_KEY
+
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.renderers import JSONRenderer
 
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import pad, unpad
@@ -55,10 +60,10 @@ def Login(request):
         username1 = request.POST.get('user2')
         password1 = request.POST.get('pass2')
 
-        check_user = custom_authenticate(username1, password1)
+        check_user = authenticate(username1, password1)
 
         if check_user is not None:
-            custom_login(request, check_user)
+            auth_login(request, check_user)
 
             return redirect('userpage')
         else:
@@ -97,11 +102,14 @@ def Register(request):
         email = request.POST['email1']
         password = request.POST['pass1']
         confirmpassword = request.POST['cpass1']
+        user_types = request.POST['user_type']
 
         if(is_valid_username(username) == True and is_valid_email(email) == True):
             if(is_valid_password(password, confirmpassword) == True):
-                user = AddUser(Username=username, Email=email, Password=password)
-                user.save()
+                user1 = AddUser(Username=username, Email=email, Password=password)
+                token = create_token(username, password, user_types)
+                user1.save()
+                print(token)
             else:
                 message = is_valid_password(password, confirmpassword)
                 messages.info(request, message)
@@ -114,7 +122,6 @@ def Register(request):
         
 
     return render(request, "RegisterPage.html")
-
 
 def is_valid_username(username):
     # Kiểm tra chiều dài của tên người dùng
@@ -171,3 +178,28 @@ def Admin(request):
 
 def Load(request):
     return render(request, "LoadingPage.html")
+
+def create_token(username, password, user_types):
+    cipher = AESCipher(key)
+
+    encoded_username = username.encode()
+    encoded_password = password.encode()
+    encoded_user_types = user_types.encode()
+    encrypted_username = cipher.encrypt(encoded_username)
+    encrypted_password = cipher.encrypt(encoded_password)
+    encrypted_user_types = cipher.encrypt(encoded_user_types)
+    str_username = str(encrypted_username)
+    str_password = str(encrypted_password)
+    str_user_types = str(encrypted_user_types)
+
+    # Tạo từ điển token
+    token = {
+        "username": str_username,
+        "password": str_password,
+        "user_types": str_user_types
+    }
+
+    # Chuyển từ điển thành chuỗi JSON
+    token_json = json.dumps(token)
+
+    return token_json
