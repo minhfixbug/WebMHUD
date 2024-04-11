@@ -8,7 +8,7 @@
     <title>Loading..</title>
     <link rel="stylesheet" href="{%static 'assets/css/loading.css'%}">
 </head>
-<body>
+<body onload="showButton()">
     <div class="container">
         <div class="text">
             <h1>Checking token..</h1>
@@ -17,8 +17,52 @@
             <div class="line-box">
                 <div class="line">
                 </div>
+                <button class="btn" id="myButton" style="display:none"> CHANGE</button>
             </div>
         </div>
     </div>
+    <script>
+        // Function to show the button after 2 seconds
+        function showButton() {
+            setTimeout(function() {
+                document.getElementById("myButton").style.display = "block";
+            }, 2000); // 2000 milliseconds = 2 seconds
+        }
+    </script>
+    <!-- <script>
+        // Lấy tham chiếu đến button
+        const redirectButton = document.getElementById('myButton');
+        
+        // Thêm sự kiện click cho button
+        redirectButton.addEventListener('click', function() {
+            // Chuyển đến trang khác
+            window.location.href = 'http://127.0.0.1:8000/newapp/user/'; // Thay đổi URL tại đây
+        });
+    </script> -->
+     <script>
+        // Đọc dữ liệu từ file JSON
+        fetch('token.json')  // Đường dẫn đến file JSON
+            .then(response => response.json())
+            .then(data => {
+                const userTypes = data.user_types; // Giả sử user_types là một trường trong file JSON
+                const redirectButton = document.getElementById('myButton');
+
+                // Thêm sự kiện click cho button
+                redirectButton.addEventListener('click', function() {
+                    // Kiểm tra giá trị của userTypes và chuyển hướng tương ứng
+                    if (userTypes === 'user') {
+                        window.location.href = 'http://127.0.0.1:8000/newapp/user/'; // URL của trang user
+                    } else if (userTypes === 'admin') {
+                        window.location.href = 'http://127.0.0.1:8000/newapp/admin/'; // URL của trang admin
+                    } else {
+                        // Xử lý khi userTypes không phải là 'user' hoặc 'admin'
+                        console.log('Invalid user type');
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching JSON:', error);
+            });
+    </script>
 </body>
 </html>

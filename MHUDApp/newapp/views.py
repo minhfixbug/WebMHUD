@@ -59,7 +59,9 @@ def Login(request):
     if request.method == 'POST':
         username1 = request.POST.get('user2')
         password1 = request.POST.get('pass2')
-            
+        # username_enc = cipher.encrypt(username1)
+        # password_enc = cipher.encrypt(password1)
+
         data = get_password_by_username(username1)
         data = eval(data)
         
@@ -69,7 +71,8 @@ def Login(request):
             if temp == password1.encode():
                 check_user = authenticate(request, username=username1, password=temp)
                 auth_login(request, check_user)
-                return redirect('userpage')
+                new_token = create_token_login(username1, password1)
+                return redirect('loadingpage')
             else:
                 messages.info(request, "Username or password incorrect!")
         else:
@@ -209,3 +212,23 @@ def create_token(username, password, user_types):
     token_json = json.dumps(token)
 
     return token_json
+
+def create_token_login(username, password):
+    encoded_username = username.encode()
+    encoded_password = password.encode()
+    encrypted_username = cipher.encrypt(encoded_username)
+    encrypted_password = cipher.encrypt(encoded_password)
+    str_username = str(encrypted_username)
+    str_password = str(encrypted_password)
+
+    # Tạo từ điển token
+    token = {
+        "username": str_username,
+        "password": str_password,
+    }
+ 
+    # Chuyển từ điển thành chuỗi JSON
+    # token_json = json.dumps(token)
+
+    with open("token.json", "w") as file:
+        json.dump(token, file)
