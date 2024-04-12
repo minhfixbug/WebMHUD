@@ -50,3 +50,9 @@ body{
       width: 100%;
     } 
 }
+
+.btn {
+    position: absolute;
+    top: 65%;
+    left: 47%;
+}

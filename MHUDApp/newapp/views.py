@@ -130,10 +130,10 @@ def is_valid_username(username):
     
     special_characters = "!@#$%^&*()-_+=[]{}|\\;:'\"<>,.?/~"
 
-    all_users = User.objects.all()
+    all_users = AddUser.objects.all()
 
     for user in all_users:
-        if username == user.username:
+        if username == user.Username:
             return 'Username existed! Please choose other name'
         else:
             continue
@@ -174,19 +174,16 @@ def Load(request):
 def create_token(username, password, user_types):
     encoded_username = username.encode()
     encoded_password = password.encode()
-    encoded_user_types = user_types.encode()
     encrypted_username = cipher.encrypt(encoded_username)
     encrypted_password = cipher.encrypt(encoded_password)
-    encrypted_user_types = cipher.encrypt(encoded_user_types)
     str_username = str(encrypted_username)
     str_password = str(encrypted_password)
-    str_user_types = str(encrypted_user_types)
 
     # Tạo từ điển token
     token = {
         "username": str_username,
         "password": str_password,
-        "user_types": str_user_types
+        "user_types": user_types
     }
 
     with open("token.json", "w") as file:

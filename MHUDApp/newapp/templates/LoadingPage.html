@@ -30,7 +30,7 @@
             console.log("start 1");
         }
     </script>
-    <script>
+    <!-- <script>
         // Lấy tham chiếu đến button
         const redirectButton = document.getElementById('myButton');
         
@@ -39,27 +39,22 @@
             // Chuyển đến trang khác
             window.location.href = 'http://127.0.0.1:8000/newapp/user/'; 
         });
-    </script>
-    <!-- <script>
+    </script> -->
+    <script>
         // Đọc dữ liệu từ file JSON
-        console.log('start');
-        fetch('http://localhost:3000/user_types') 
+        fetch('http://localhost:8000/')
             .then(response => response.json())
             .then(data => {
-                const userTypes = data; // Giả sử user_types là một trường trong file JSON
+                const userTypes = data.user_types; 
                 const redirectButton = document.getElementById('myButton');
                 console.log(userTypes);
-
-                // Thêm sự kiện click cho button
+                
                 redirectButton.addEventListener('click', function() {
-                    console.log('start');
-                    // Kiểm tra giá trị của userTypes và chuyển hướng tương ứng
                     if (userTypes === 'user') {
                         window.location.href = 'http://127.0.0.1:8000/newapp/user/'; 
                     } else if (userTypes === 'admin') {
                         window.location.href = 'http://127.0.0.1:8000/newapp/admin/'; 
                     } else {
-                        // Xử lý khi userTypes không phải là 'user' hoặc 'admin'
                         console.log('Invalid user type');
                     }
                 });
@@ -67,6 +62,6 @@
             .catch(error => {
                 console.error('Error fetching JSON:', error);
             });
-    </script> -->
+    </script>
 </body>
 </html>
